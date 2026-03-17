@@ -167,6 +167,36 @@
             font-weight: 400;
         }
 
+        .service-link {
+            color: var(--text-main);
+            text-decoration: none;
+            position: relative;
+            transition: color 0.3s ease;
+            display: inline-block;
+        }
+
+        .service-link:hover {
+            color: #a78bfa;
+        }
+
+        .service-link::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            transform: scaleX(0);
+            height: 1px;
+            bottom: -2px;
+            left: 0;
+            background-color: #a78bfa;
+            transform-origin: bottom right;
+            transition: transform 0.25s ease-out;
+        }
+
+        .service-link:hover::after {
+            transform: scaleX(1);
+            transform-origin: bottom left;
+        }
+
         ul.business-purposes {
             list-style: none;
         }
@@ -329,10 +359,20 @@
                     </ul>
                 </div>
             </div>
+
+            <div class="profile-row">
+                <div class="row-header">提供中サービス</div>
+                <div class="row-content">
+                    賃貸物件管理：<a href="https://maisonterrasseasagaya.pages.dev/introduction" target="_blank"
+                        rel="noopener noreferrer" class="service-link">Maison Terrasse Asagaya</a>
+                </div>
+            </div>
         </main>
 
         <footer class="contact-footer">
-            <p>お問い合わせは<a href="https://docs.google.com/forms/d/e/1FAIpQLSdkLEoxjHXS-Uq9_uAbIKo9T3bEFGlFypbnEbYlW5OAoZeV8g/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">こちら</a></p>
+            <p>お問い合わせは<a
+                    href="https://docs.google.com/forms/d/e/1FAIpQLSdkLEoxjHXS-Uq9_uAbIKo9T3bEFGlFypbnEbYlW5OAoZeV8g/viewform?usp=publish-editor"
+                    target="_blank" rel="noopener noreferrer">こちら</a></p>
         </footer>
     </div>
 </body>
