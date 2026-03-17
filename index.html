@@ -214,6 +214,47 @@
             }
         }
 
+        .contact-footer {
+            text-align: center;
+            margin-top: 3rem;
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+
+        .contact-footer p {
+            font-size: 1rem;
+            color: var(--text-muted);
+        }
+
+        .contact-footer a {
+            color: #8b5cf6;
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .contact-footer a:hover {
+            color: #a78bfa;
+        }
+
+        .contact-footer a::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            transform: scaleX(0);
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background-color: #a78bfa;
+            transform-origin: bottom right;
+            transition: transform 0.25s ease-out;
+        }
+
+        .contact-footer a:hover::after {
+            transform: scaleX(1);
+            transform-origin: bottom left;
+        }
+
         /* Responsive Design */
         @media (max-width: 600px) {
             .profile-row {
@@ -289,6 +330,10 @@
                 </div>
             </div>
         </main>
+
+        <footer class="contact-footer">
+            <p>お問い合わせは<a href="https://docs.google.com/forms/d/e/1FAIpQLSdkLEoxjHXS-Uq9_uAbIKo9T3bEFGlFypbnEbYlW5OAoZeV8g/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer">こちら</a></p>
+        </footer>
     </div>
 </body>
 
