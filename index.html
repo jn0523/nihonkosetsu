@@ -285,6 +285,33 @@
             transform-origin: bottom left;
         }
 
+        /* 法的文書ナビゲーション — フッター下部に配置して視認性を保ちつつ控えめに表示 */
+        .legal-nav {
+            margin-top: 1.5rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .legal-nav a {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.25s ease;
+            font-weight: 400;
+        }
+
+        .legal-nav a:hover {
+            color: #a78bfa;
+        }
+
+        .legal-nav .separator {
+            color: rgba(255, 255, 255, 0.2);
+            font-size: 0.75rem;
+        }
+
         /* Responsive Design */
         @media (max-width: 600px) {
             .profile-row {
@@ -373,6 +400,12 @@
             <p>お問い合わせは<a
                     href="https://docs.google.com/forms/d/e/1FAIpQLSdkLEoxjHXS-Uq9_uAbIKo9T3bEFGlFypbnEbYlW5OAoZeV8g/viewform?usp=publish-editor"
                     target="_blank" rel="noopener noreferrer">こちら</a></p>
+            <!-- 法的文書へのナビゲーション — アプリリリースに伴い追加 -->
+            <nav class="legal-nav" aria-label="法的文書ナビゲーション">
+                <a href="privacy-policy.html" id="link-privacy-policy">プライバシーポリシー</a>
+                <span class="separator" aria-hidden="true">｜</span>
+                <a href="terms-of-service.html" id="link-terms-of-service">利用規約</a>
+            </nav>
         </footer>
     </div>
 </body>

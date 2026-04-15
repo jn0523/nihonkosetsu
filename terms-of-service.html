@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="日本工設株式会社が提供するHealth Platformアプリ群（BulkBuyNavigator, NutriBalance, TrainLog）の共通利用規約です。">
+    <title>利用規約 | 日本工設株式会社</title>
+    <!-- Google Fonts (index.htmlと統一) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* =============================================
+         * デザイントークン — index.htmlと共通の変数セット
+         * ============================================= */
+        :root {
+            --primary-gradient: linear-gradient(135deg, #60a5fa, #8b5cf6);
+            --bg-color: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --accent-blue: #60a5fa;
+            --accent-purple: #8b5cf6;
+            --accent-purple-light: #a78bfa;
+            /* 利用規約は警告的なトーンを含むため、赤みを帯びたアクセント色を追加 */
+            --accent-warning: rgba(251, 113, 133, 0.15);
+            --accent-warning-border: rgba(251, 113, 133, 0.4);
+            --accent-warning-text: #fda4af;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: var(--bg-color);
+            /* 背景のグラデーション光源はindex.htmlと同一にしてブランド統一感を保つ */
+            background-image:
+                radial-gradient(circle at 15% 50%, rgba(96, 165, 250, 0.15), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.15), transparent 25%);
+            color: var(--text-main);
+            min-height: 100vh;
+            line-height: 1.8;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* =============================================
+         * 背景アニメーション（Blob） — index.htmlと同仕様
+         * ============================================= */
+        .blob {
+            position: fixed; /* fixedにしてスクロール時も動かす */
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.5;
+            animation: float 10s infinite ease-in-out alternate;
+        }
+
+        .blob-1 {
+            top: -10%;
+            left: -10%;
+            width: 40vw;
+            height: 40vw;
+            background: rgba(56, 189, 248, 0.2);
+            animation-delay: 0s;
+        }
+
+        .blob-2 {
+            bottom: -10%;
+            right: -10%;
+            width: 50vw;
+            height: 50vw;
+            background: rgba(167, 139, 250, 0.2);
+            animation-delay: -5s;
+        }
+
+        @keyframes float {
+            0%   { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(30px, 50px) scale(1.1); }
+        }
+
+        /* =============================================
+         * ページレイアウト
+         * ============================================= */
+        .page-wrapper {
+            max-width: 820px;
+            margin: 0 auto;
+            padding: 3rem 2rem 5rem;
+            z-index: 10;
+            position: relative;
+        }
+
+        /* =============================================
+         * ナビゲーション（戻るリンク）
+         * ============================================= */
+        .nav-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin-bottom: 2.5rem;
+            transition: color 0.25s ease;
+        }
+
+        .nav-back:hover {
+            color: var(--accent-purple-light);
+        }
+
+        .nav-back svg {
+            width: 16px;
+            height: 16px;
+            transition: transform 0.25s ease;
+        }
+
+        .nav-back:hover svg {
+            /* ホバーで矢印を少し左に動かして「戻る」感を強調する */
+            transform: translateX(-3px);
+        }
+
+        /* =============================================
+         * ヘッダー
+         * ============================================= */
+        header {
+            margin-bottom: 2.5rem;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        .page-category {
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: var(--accent-purple);
+            margin-bottom: 0.75rem;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+            margin-bottom: 0.75rem;
+        }
+
+        .last-updated {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* =============================================
+         * 同意確認バナー — 規約同意の通知として最上部に表示
+         * ユーザーが規約の存在を見落とさないようにするため目立つ装飾を施す
+         * ============================================= */
+        .consent-banner {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            border-left: 3px solid var(--accent-purple);
+            border-radius: 16px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.8s ease-out 0.05s both;
+            font-size: 0.92rem;
+            color: var(--text-muted);
+            line-height: 1.9;
+        }
+
+        .consent-banner strong {
+            color: var(--text-main);
+        }
+
+        /* =============================================
+         * コンテンツカード — 各セクションのコンテナ
+         * ============================================= */
+        .content-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin-bottom: 1.5rem;
+            animation: fadeInUp 0.8s ease-out both;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        /* カードの表示タイミングをずらしてウォーターフォール効果を演出 */
+        .content-card:nth-child(1) { animation-delay: 0.12s; }
+        .content-card:nth-child(2) { animation-delay: 0.19s; }
+        .content-card:nth-child(3) { animation-delay: 0.26s; }
+        .content-card:nth-child(4) { animation-delay: 0.33s; }
+        .content-card:nth-child(5) { animation-delay: 0.40s; }
+        .content-card:nth-child(6) { animation-delay: 0.47s; }
+        .content-card:nth-child(7) { animation-delay: 0.54s; }
+        .content-card:nth-child(8) { animation-delay: 0.61s; }
+
+        .content-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        /* 免責事項カードは視覚的に「特別な注意が必要」であることを示す */
+        .content-card.disclaimer {
+            border-color: var(--accent-warning-border);
+            background: linear-gradient(
+                135deg,
+                rgba(30, 41, 59, 0.7),
+                rgba(30, 41, 59, 0.7) 60%,
+                var(--accent-warning) 100%
+            );
+        }
+
+        /* =============================================
+         * セクション見出し
+         * ============================================= */
+        h2 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        /* セクション番号バッジ — 視覚的な階層の明示 */
+        .section-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            background: var(--primary-gradient);
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: white;
+            -webkit-text-fill-color: white;
+            flex-shrink: 0;
+        }
+
+        /* 免責事項セクションのバッジは警告色で差別化 */
+        .section-badge.warning {
+            background: linear-gradient(135deg, #f43f5e, #fb923c);
+        }
+
+        /* =============================================
+         * テキストと箇条書き
+         * ============================================= */
+        p {
+            font-size: 0.92rem;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+        }
+
+        p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* カスタムリスト — ブランドカラーのビュレット */
+        ul.doc-list {
+            list-style: none;
+            padding-left: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        ul.doc-list li {
+            position: relative;
+            padding-left: 1.4rem;
+            font-size: 0.92rem;
+            color: var(--text-muted);
+        }
+
+        ul.doc-list li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--accent-purple);
+            font-size: 1.1em;
+            line-height: 1.4;
+        }
+
+        /* 禁止事項リストは警告色のビュレット */
+        ul.doc-list.prohibited li::before {
+            color: var(--accent-warning-text);
+        }
+
+        .data-label {
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        /* メールアドレスリンク */
+        a.email-link {
+            color: var(--accent-purple-light);
+            text-decoration: none;
+            transition: color 0.25s ease;
+        }
+
+        a.email-link:hover {
+            color: var(--accent-blue);
+        }
+
+        /* 対象アプリのタグ表示 */
+        .app-tag-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            margin-top: 0.75rem;
+        }
+
+        .app-tag {
+            display: inline-block;
+            padding: 0.25rem 0.85rem;
+            border-radius: 999px;
+            background: rgba(139, 92, 246, 0.15);
+            border: 1px solid rgba(139, 92, 246, 0.35);
+            font-size: 0.82rem;
+            color: var(--accent-purple-light);
+            font-weight: 500;
+        }
+
+        /* =============================================
+         * フッター
+         * ============================================= */
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            animation: fadeInUp 0.8s ease-out 0.65s both;
+        }
+
+        footer p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        footer a {
+            color: var(--accent-purple-light);
+            text-decoration: none;
+            transition: color 0.25s ease;
+        }
+
+        footer a:hover {
+            color: var(--accent-blue);
+        }
+
+        /* =============================================
+         * アニメーション定義
+         * ============================================= */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-24px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* =============================================
+         * レスポンシブ対応
+         * ============================================= */
+        @media (max-width: 600px) {
+            .page-wrapper {
+                padding: 2rem 1.25rem 4rem;
+            }
+
+            h1 {
+                font-size: 1.7rem;
+            }
+
+            .content-card {
+                padding: 1.75rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 背景装飾Blob -->
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+
+    <div class="page-wrapper">
+
+        <!-- 戻るナビゲーション -->
+        <a href="index.html" class="nav-back" id="nav-back-to-top">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+            </svg>
+            会社概要に戻る
+        </a>
+
+        <!-- ページヘッダー -->
+        <header>
+            <div class="page-category">Legal Document</div>
+            <h1>利用規約</h1>
+            <div class="last-updated">最終更新日：2026年4月14日</div>
+        </header>
+
+        <!-- 同意確認バナー -->
+        <div class="consent-banner" id="consent-notice">
+            <strong>本規約への同意について：</strong>ユーザーは本プラットフォームの各アプリを利用することで、本規約に同意したものとみなされます。
+        </div>
+
+        <!-- メインコンテンツ -->
+        <main id="main-content">
+
+            <!-- セクション1: サービスの目的 -->
+            <div class="content-card" id="section-1">
+                <h2><span class="section-badge">1</span>サービスの目的</h2>
+                <p>本プラットフォームは、食事管理、買い物支援、トレーニング記録等の提供を通じて、ユーザーの健康的な生活をサポートすることを目的としています。</p>
+            </div>
+
+            <!-- セクション2: AI免責 — 健康被害リスクがあるため特別な装飾で強調 -->
+            <div class="content-card disclaimer" id="section-2">
+                <h2><span class="section-badge warning">2</span>AIによる推定・生成情報の免責</h2>
+                <p>当プラットフォームの各機能（食事解析、レシピ抽出、健康アドバイス等）には、Google Gemini API等の生成AIが利用されています。</p>
+                <ul class="doc-list">
+                    <li><span class="data-label">参考情報</span>：生成されるデータ（栄養素、カロリー、食材分量等）はあくまで参考値であり、正確性や完全性を保証するものではありません。</li>
+                    <li><span class="data-label">免責</span>：AIの出力情報に基づいた行動により生じた健康被害、アレルギー反応、経済的損失等について、当開発者は一切の責任を負いません。医療上の判断、アレルギー管理、重大な意思決定は、必ず専門家や物理的な製品表示を確認の上、ユーザー自身の責任で行ってください。</li>
+                </ul>
+            </div>
+
+            <!-- セクション3: 課金 -->
+            <div class="content-card" id="section-3">
+                <h2><span class="section-badge">3</span>アプリ内課金とサブスクリプション</h2>
+                <ul class="doc-list">
+                    <li>本プラットフォーム内の各アプリで提供されるサブスクリプション（Premium/Pro等）の決済は、Apple App StoreまたはGoogle Playの規約に従います。</li>
+                    <li>原則として購入後の返金は行いません。解約は各ストアの設定からユーザー自身で行う必要があります。</li>
+                </ul>
+            </div>
+
+            <!-- セクション4: 広告 -->
+            <div class="content-card" id="section-4">
+                <h2><span class="section-badge">4</span>広告の表示</h2>
+                <p>無料版ではGoogle AdMob等のサードパーティによる広告が表示されます。広告内容およびリンク先のサイトについて、当開発者は一切の責任を負いません。</p>
+            </div>
+
+            <!-- セクション5: 禁止事項 -->
+            <div class="content-card" id="section-5">
+                <h2><span class="section-badge">5</span>禁止事項</h2>
+                <ul class="doc-list prohibited">
+                    <li>サーバー、ネットワーク、または外部API（AI API等）への不正アクセス、過度な負荷をかける行為</li>
+                    <li>リバースエンジニアリング、逆コンパイル、またはこれに類する行為</li>
+                    <li>法令、公序良俗に反する行為、または他者への迷惑行為</li>
+                </ul>
+            </div>
+
+            <!-- セクション6: サービス変更・停止 -->
+            <div class="content-card" id="section-6">
+                <h2><span class="section-badge">6</span>サービス提供の変更・停止</h2>
+                <p>システムの保守、更新、または外部サービス（Google、Supabase等）の障害や仕様変更により、当開発者は事前通知なくサービスの一部または全部を停止・変更できるものとします。</p>
+            </div>
+
+            <!-- セクション7: 免責事項 -->
+            <div class="content-card" id="section-7">
+                <h2><span class="section-badge">7</span>免責事項</h2>
+                <p>当開発者は、本プラットフォームの利用から生じた直接的、間接的な損害について、当開発者に故意または重大な過失がある場合を除き、一切の責任を負いません。</p>
+            </div>
+
+            <!-- セクション8: 準拠法 -->
+            <div class="content-card" id="section-8">
+                <h2><span class="section-badge">8</span>準拠法および管轄裁判所</h2>
+                <p>本規約は日本法に準拠します。本プラットフォームに関連する一切の紛争については、東京地方裁判所を専属的合意管轄裁判所とします。</p>
+            </div>
+
+            <!-- 対象アプリ -->
+            <div class="content-card" id="section-target-apps">
+                <h2>対象アプリケーション</h2>
+                <p>本規約が適用される対象アプリは以下の通りです。</p>
+                <div class="app-tag-list">
+                    <span class="app-tag">BulkBuyNavigator</span>
+                    <span class="app-tag">NutriBalance</span>
+                    <span class="app-tag">TrainLog</span>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- フッター -->
+        <footer id="page-footer">
+            <p>
+                <a href="privacy-policy.html" id="link-to-privacy">プライバシーポリシーを読む</a>
+                &nbsp;｜&nbsp;
+                <a href="index.html" id="link-back-home">会社概要に戻る</a>
+            </p>
+            <p style="margin-top: 1rem;">© 2024 日本工設株式会社. All rights reserved.</p>
+        </footer>
+
+    </div>
+</body>
+
+</html>

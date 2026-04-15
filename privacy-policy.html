@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="日本工設株式会社が提供するHealth Platformアプリ群（BulkBuyNavigator, NutriBalance, TrainLog）の共通プライバシーポリシーです。">
+    <title>プライバシーポリシー | 日本工設株式会社</title>
+    <!-- Google Fonts (index.htmlと統一) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* =============================================
+         * デザイントークン — index.htmlと共通の変数セット
+         * ============================================= */
+        :root {
+            --primary-gradient: linear-gradient(135deg, #60a5fa, #8b5cf6);
+            --bg-color: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --accent-blue: #60a5fa;
+            --accent-purple: #8b5cf6;
+            --accent-purple-light: #a78bfa;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: var(--bg-color);
+            /* 背景のグラデーション光源はindex.htmlと同一にしてブランド統一感を保つ */
+            background-image:
+                radial-gradient(circle at 15% 50%, rgba(96, 165, 250, 0.15), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.15), transparent 25%);
+            color: var(--text-main);
+            min-height: 100vh;
+            line-height: 1.8;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* =============================================
+         * 背景アニメーション（Blob） — index.htmlと同仕様
+         * ============================================= */
+        .blob {
+            position: fixed; /* fixedにしてスクロール時も動かす */
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.5;
+            animation: float 10s infinite ease-in-out alternate;
+        }
+
+        .blob-1 {
+            top: -10%;
+            left: -10%;
+            width: 40vw;
+            height: 40vw;
+            background: rgba(56, 189, 248, 0.2);
+            animation-delay: 0s;
+        }
+
+        .blob-2 {
+            bottom: -10%;
+            right: -10%;
+            width: 50vw;
+            height: 50vw;
+            background: rgba(167, 139, 250, 0.2);
+            animation-delay: -5s;
+        }
+
+        @keyframes float {
+            0%   { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(30px, 50px) scale(1.1); }
+        }
+
+        /* =============================================
+         * ページレイアウト
+         * ============================================= */
+        .page-wrapper {
+            max-width: 820px;
+            margin: 0 auto;
+            padding: 3rem 2rem 5rem;
+            z-index: 10;
+            position: relative;
+        }
+
+        /* =============================================
+         * ナビゲーション（戻るリンク）
+         * ============================================= */
+        .nav-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin-bottom: 2.5rem;
+            transition: color 0.25s ease;
+        }
+
+        .nav-back:hover {
+            color: var(--accent-purple-light);
+        }
+
+        .nav-back svg {
+            width: 16px;
+            height: 16px;
+            transition: transform 0.25s ease;
+        }
+
+        .nav-back:hover svg {
+            /* ホバーで矢印を少し左に動かして「戻る」感を強調する */
+            transform: translateX(-3px);
+        }
+
+        /* =============================================
+         * ヘッダー
+         * ============================================= */
+        header {
+            margin-bottom: 2.5rem;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        .page-category {
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: var(--accent-purple);
+            margin-bottom: 0.75rem;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+            margin-bottom: 0.75rem;
+        }
+
+        .last-updated {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* =============================================
+         * リード文カード — 最初に目に入るサマリー
+         * ============================================= */
+        .lead-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.75rem 2rem;
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.8s ease-out 0.1s both;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            line-height: 1.9;
+        }
+
+        /* =============================================
+         * コンテンツカード — 各セクションのコンテナ
+         * ============================================= */
+        .content-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin-bottom: 1.5rem;
+            animation: fadeInUp 0.8s ease-out both;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        /* カードの表示タイミングをずらしてウォーターフォール効果を演出 */
+        .content-card:nth-child(1) { animation-delay: 0.15s; }
+        .content-card:nth-child(2) { animation-delay: 0.22s; }
+        .content-card:nth-child(3) { animation-delay: 0.29s; }
+        .content-card:nth-child(4) { animation-delay: 0.36s; }
+        .content-card:nth-child(5) { animation-delay: 0.43s; }
+        .content-card:nth-child(6) { animation-delay: 0.50s; }
+        .content-card:nth-child(7) { animation-delay: 0.57s; }
+
+        .content-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        /* =============================================
+         * セクション見出し
+         * ============================================= */
+        h2 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        /* セクション番号バッジ — 視覚的な階層の明示 */
+        .section-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            background: var(--primary-gradient);
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: white;
+            -webkit-text-fill-color: white;
+            flex-shrink: 0;
+        }
+
+        h3 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--accent-blue);
+            margin: 1.25rem 0 0.6rem;
+        }
+
+        h3:first-of-type {
+            margin-top: 0.25rem;
+        }
+
+        /* =============================================
+         * テキストと箇条書き
+         * ============================================= */
+        p {
+            font-size: 0.92rem;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+        }
+
+        p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* カスタムリスト — ブランドカラーのビュレット */
+        ul.doc-list {
+            list-style: none;
+            padding-left: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        ul.doc-list li {
+            position: relative;
+            padding-left: 1.4rem;
+            font-size: 0.92rem;
+            color: var(--text-muted);
+        }
+
+        ul.doc-list li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--accent-purple);
+            font-size: 1.1em;
+            line-height: 1.4;
+        }
+
+        /* データ項目（太字ラベル + 説明）のスタイル */
+        .data-label {
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        /* メールアドレスリンク */
+        a.email-link {
+            color: var(--accent-purple-light);
+            text-decoration: none;
+            position: relative;
+            transition: color 0.25s ease;
+        }
+
+        a.email-link:hover {
+            color: var(--accent-blue);
+        }
+
+        /* =============================================
+         * フッター — ページ下部のナビゲーション
+         * ============================================= */
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            animation: fadeInUp 0.8s ease-out 0.6s both;
+        }
+
+        footer p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        footer a {
+            color: var(--accent-purple-light);
+            text-decoration: none;
+            transition: color 0.25s ease;
+        }
+
+        footer a:hover {
+            color: var(--accent-blue);
+        }
+
+        /* =============================================
+         * アニメーション定義
+         * ============================================= */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-24px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* =============================================
+         * レスポンシブ対応
+         * ============================================= */
+        @media (max-width: 600px) {
+            .page-wrapper {
+                padding: 2rem 1.25rem 4rem;
+            }
+
+            h1 {
+                font-size: 1.7rem;
+            }
+
+            .content-card {
+                padding: 1.75rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 背景装飾Blob -->
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+
+    <div class="page-wrapper">
+
+        <!-- 戻るナビゲーション -->
+        <a href="index.html" class="nav-back" id="nav-back-to-top">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+            </svg>
+            会社概要に戻る
+        </a>
+
+        <!-- ページヘッダー -->
+        <header>
+            <div class="page-category">Legal Document</div>
+            <h1>プライバシーポリシー</h1>
+            <div class="last-updated">最終更新日：2026年4月14日</div>
+        </header>
+
+        <!-- リード文 -->
+        <div class="lead-card" id="lead-section">
+            本プライバシーポリシーは、日本工設（以下「当開発者」）が提供するHealth Platformアプリ群（以下「本プラットフォーム」）における、ユーザー情報の取り扱い方針を定めるものです。
+        </div>
+
+        <!-- メインコンテンツ -->
+        <main id="main-content">
+
+            <!-- セクション1: 対象アプリ -->
+            <div class="content-card" id="section-1">
+                <h2><span class="section-badge">1</span>対象のアプリケーション</h2>
+                <p>本ポリシーは、以下のアプリケーション（以下「各アプリ」）に適用されます。</p>
+                <ul class="doc-list">
+                    <li><span class="data-label">BulkBuyNavigator</span>：レシピ管理および買い物支援</li>
+                    <li><span class="data-label">NutriBalance</span>：食事記録および栄養分析</li>
+                    <li><span class="data-label">TrainLog</span>：ワークアウト記録および健康管理</li>
+                </ul>
+            </div>
+
+            <!-- セクション2: 収集情報と利用目的 -->
+            <div class="content-card" id="section-2">
+                <h2><span class="section-badge">2</span>収集する情報とその利用目的</h2>
+                <p>各アプリは、その機能提供のために以下の情報を収集・利用します。</p>
+
+                <h3>2-1. 健康・ライフログデータ</h3>
+                <ul class="doc-list">
+                    <li><span class="data-label">データ</span>：体重、身長、食事内容（写真・テキスト）、トレーニング記録、在庫食材、献立内容</li>
+                    <li><span class="data-label">目的</span>：カロリー推定、進捗の可視化、献立生成、在庫管理</li>
+                    <li><span class="data-label">保存</span>：データは主にデバイス上のローカルデータベース（Isar等）に保存されます。クラウド同期（Supabase等）が有効な場合、選択された地域（日本等）のサーバーで安全に保管されます。</li>
+                </ul>
+
+                <h3>2-2. AI機能（Gemini API）を通じた情報処理</h3>
+                <ul class="doc-list">
+                    <li><span class="data-label">データ</span>：食事の写真、WebページURL、トレーニング種目、入力テキスト</li>
+                    <li><span class="data-label">目的</span>：AIによる栄養素推定、レシピ構造化、トレーニングのアドバイス生成</li>
+                    <li><span class="data-label">ガバナンス</span>：当開発者は、日本国の「AI事業者ガイドライン」、OECD AI原則、NIST AI RMFを遵守します。AI処理に際して特定の個人を識別する情報は送信されず、Google社の規約に基づきデータは保護されます。</li>
+                </ul>
+
+                <h3>2-3. 広告・利用分析（AdMob / Firebase）</h3>
+                <ul class="doc-list">
+                    <li><span class="data-label">データ</span>：広告識別子（IDFA/AAID）、OSバージョン、基本的なアプリ操作ログ</li>
+                    <li><span class="data-label">目的</span>：無料版ユーザーへの広告配信（パーソナライズ/非パーソナライズ）、およびアプリの不具合修正・品質改善</li>
+                </ul>
+
+                <h3>2-4. 課金・サブスクリプション管理（RevenueCat）</h3>
+                <ul class="doc-list">
+                    <li><span class="data-label">データ</span>：購入履歴、およびサブスクリプションの状態（決済情報は直接保持しません）</li>
+                    <li><span class="data-label">目的</span>：有料プラン機能（プレミアム/Pro）の提供、および購入状態の復元</li>
+                </ul>
+            </div>
+
+            <!-- セクション3: データ共有 -->
+            <div class="content-card" id="section-3">
+                <h2><span class="section-badge">3</span>データの共有と第三者提供</h2>
+                <p>当開発者は、法令に基づく場合やサービス提供に不可欠な外部モジュール（Google、Supabase、RevenueCat等）への情報送信を除き、ユーザーの同意なく個人情報を第三者に提供することはありません。</p>
+            </div>
+
+            <!-- セクション4: セキュリティ -->
+            <div class="content-card" id="section-4">
+                <h2><span class="section-badge">4</span>セキュリティ</h2>
+                <p>ユーザーのデータを保護するため、以下の対策を徹底しています。</p>
+                <ul class="doc-list">
+                    <li>全通信におけるTLS/HTTPS暗号化</li>
+                    <li>データベースの行レベルセキュリティ（RLS）によるアクセス制限</li>
+                    <li>AIガバナンスに基づく定期的なリスク・アセスメントの実施</li>
+                </ul>
+            </div>
+
+            <!-- セクション5: ユーザーの権利 -->
+            <div class="content-card" id="section-5">
+                <h2><span class="section-badge">5</span>ユーザーの権利とデータ削除</h2>
+                <p>ユーザーは、各アプリの設定またはデータの初期化機能を通じて、ローカルデータをいつでも削除できます。クラウド同期データについては、アカウント削除リクエストにより関連するすべての情報を破棄します。</p>
+            </div>
+
+            <!-- セクション6: 改定 -->
+            <div class="content-card" id="section-6">
+                <h2><span class="section-badge">6</span>改定</h2>
+                <p>当開発者は、サービスの内容変更や法規制の改正に伴い、本ポリシーを随時改定します。重要な変更がある場合は、アプリ内での通知等を通じてお知らせします。</p>
+            </div>
+
+            <!-- セクション7: お問い合わせ -->
+            <div class="content-card" id="section-7">
+                <h2><span class="section-badge">7</span>お問い合わせ</h2>
+                <p>本ポリシーに関するご質問や情報の削除リクエストは、以下までご連絡ください。</p>
+                <ul class="doc-list">
+                    <li><span class="data-label">窓口</span>：<a href="mailto:info@nihonkosetsu.com" class="email-link">info@nihonkosetsu.com</a></li>
+                    <li><span class="data-label">Webサイト</span>：<a href="index.html" class="email-link">日本工設株式会社 公式サイト</a></li>
+                </ul>
+            </div>
+
+        </main>
+
+        <!-- フッター -->
+        <footer id="page-footer">
+            <p>
+                <a href="terms-of-service.html" id="link-to-tos">利用規約を読む</a>
+                &nbsp;｜&nbsp;
+                <a href="index.html" id="link-back-home">会社概要に戻る</a>
+            </p>
+            <p style="margin-top: 1rem;">© 2024 日本工設株式会社. All rights reserved.</p>
+        </footer>
+
+    </div>
+</body>
+
+</html>
