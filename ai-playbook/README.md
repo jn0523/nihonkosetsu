@@ -1,16 +1,45 @@
 # Cursor・Claude Code・Antigravity・GitHub Copilot 汎用設定・ベストプラクティス
 
-Cursor・Claude Code（Ckaudecode）・Antigravity（Google Gemini IDE）・GitHub Copilot を実務で効率的に活用するための設定術、ベストプラクティス、および汎用プロンプト（`GEMINI.md` / `CLAUDE.md` / `AGENTS.md` / `copilot-instructions.md`）の設計パターンを体系的にまとめました。
+Cursor・Claude Code（Claudecode）・Antigravity（Google Gemini IDE）・GitHub Copilot を実務で効率的に活用するための設定術、ベストプラクティス、および汎用プロンプト（`GEMINI.md` / `CLAUDE.md` / `AGENTS.md` / `copilot-instructions.md`）の設計パターンを体系的にまとめました。
 
 このリポジトリは、Cursor・Claude Code・Antigravity・GitHub Copilot でのパフォーマンスを高めるために、Skills・Rules・Workflows を横断的に設計・管理することを目的としています。
 
 ---
 
-## 1. ツール別の適用方法（Rules / Workflows / Skills の配置先）
+## 1. 複数リポジトリ間のルール共有・自動同期アーキテクチャ
+
+当プロジェクトでは、単一のリポジトリにとどまらず、複数のGitHubプロジェクト（例: `nihonkosetsu`, `HealthPlatform` など）から、この `SkillsBase` の共通ルールや設定 (`AGENTS.md`, `ai-context/` 等) を参照し、全プロジェクトで一貫した高いAIパフォーマンスを発揮できる設計を導入しています。
+
+### 1-1. 仕組み（システム設計概要）
+各リポジトリに直接ルールを書き込むのではなく、`SkillsBase` コンテキストリポジトリを「SSoT (Single Source of Truth)」として扱います。
+
+1. **ポインタ配置の方針:**
+   利用側の各リポジトリ直下にある `.cursorrules` や `CLAUDE.md`, `GEMINI.md` は非常に薄く保たれており、「詳細は `ai-context/AGENTS.md` を参照せよ」というポインタだけが記述されています。
+2. **GitHub Actions による Pull Request 同期:**
+   `SkillsBase` の `main` ブランチが更新されると、`.github/workflows/sync.yml` に定義された CI/CD パイプラインが発火します。自動的に対象リポジトリ群へ最新のルールパッケージ（`AGENTS.md`, `ai-context/` などのフォルダ）をコピーし、**自動で Pull Request を作成** します。
+3. **人間によるフェイルセーフな承認:**
+   強制的にファイルを上書きするのではなく PR 形式を採用しているため、各プロジェクトの管理者は「今回のAIルールの変更が自身のプロジェクトに影響しないか」の差分を確認したうえでマージでき、安全性が担保されています。
+
+### 1-2. SkillsBase の更新運用フロー（ルールの変更手順）
+もし、AIの振る舞いを改善したい、新しいワークフローを追加・修正したい場合は、利用側のリポジトリではなく、必ずこちらの **SkillsBase 側** を更新してください。
+
+1. **SkillsBase の編集:**
+   このリポジトリ内（`AGENTS.md` や `ai-context/rules/` 内のファイルなど）で、AIに対する指示やルールを編集・追加します。
+2. **GitHub への Push:**
+   変更内容をコミットし、この `SkillsBase` リポジトリの `main` ブランチに Push します。
+   （※ Push と同時に Actions が起動し、対象リポジトリへの配信・PR 作成が開始されます。）
+3. **利用側リポジトリでの PR マージ（反映）:**
+   同期対象の各リポジトリの GitHub ページを開くと、`sync-skillsbase-updates` ブランチなどから自動送信された Pull Request が生成されています。
+   差分を確認して問題なければ「Merge」することで、各プロジェクトの AI コンテキストが最新化されます。
+   *※ プロジェクト固有の事情で部分的にコンフリクトする場合は、PRの段階で個別に差し戻し・調整が可能です。*
+
+---
+
+## 2. ツール別の適用方法（Rules / Workflows / Skills の配置先）
 
 まず最初に、4ツールそれぞれで「どこに置けば、どう効くか」を一覧化します。
 
-### 1-0. エディタ非依存で運用する共通方針
+### 2-0. エディタ非依存で運用する共通方針
 * **共通資産の配置先:** ツール固有名ではなく、`プロジェクトルート/ai-context/` に集約する。
 * **フォルダ責務を固定化:**
   * `ai-context/rules/`: 行動規範・制約（常時参照）
@@ -18,7 +47,7 @@ Cursor・Claude Code（Ckaudecode）・Antigravity（Google Gemini IDE）・GitH
   * `ai-context/skills/`: 自動発動を想定した専門知識
 * **入口ファイルを薄く保つ:** `GEMINI.md` / `CLAUDE.md` / `.github/copilot-instructions.md` / `.cursorrules` は、原則として `AGENTS.md` を参照するだけにする。
 
-### 1-1. Cursor
+### 2-1. Cursor
 * **Rules（常時ルール）**
    * 推奨: `プロジェクトルート/.cursorrules`
    * 共通化: `.cursorrules` から `AGENTS.md` 参照方針を明記
@@ -27,7 +56,7 @@ Cursor・Claude Code（Ckaudecode）・Antigravity（Google Gemini IDE）・GitH
 * **Skills（専門知識の拡張）**
    * CursorのProject RulesやDocs機能から `ai-context/skills/` を参照する運用に統一
 
-### 1-2. Antigravity（Gemini IDE）
+### 2-2. Antigravity（Gemini IDE）
 * **Rules（常時ルール）**
    * グローバル: `~/.gemini/GEMINI.md`
    * ワークスペース: `プロジェクトルート/ai-context/rules/*.md`
@@ -40,7 +69,7 @@ Cursor・Claude Code（Ckaudecode）・Antigravity（Google Gemini IDE）・GitH
 * **補足**
    * WindowsのグローバルRulesは `C:\Users\ユーザー名\.gemini\GEMINI.md` です。
 
-### 1-3. Claude Code
+### 2-3. Claude Code
 * **Rules（常時ルール）**
    * 推奨: `プロジェクトルート/CLAUDE.md`
    * 共通化: `CLAUDE.md` から `AGENTS.md` を参照するSSoT構成
@@ -52,7 +81,7 @@ Cursor・Claude Code（Ckaudecode）・Antigravity（Google Gemini IDE）・GitH
    `AGENTS.md` または `ai-context/skills/*.md` を参照する形で運用する
    * 実務上は「Rules + Commands + 共通知識ファイル」の3点で代替する
 
-### 1-4. GitHub Copilot（VS Code）
+### 2-4. GitHub Copilot（VS Code）
 * **Rules（常時ルール）**
    * 推奨: `プロジェクトルート/.github/copilot-instructions.md`
    * 共通化: `copilot-instructions.md` から `AGENTS.md` を参照するSSoT構成
@@ -63,7 +92,7 @@ Cursor・Claude Code（Ckaudecode）・Antigravity（Google Gemini IDE）・GitH
    * Copilotでもプロジェクト固有の知識は `プロジェクトルート/ai-context/skills/*.md` に置き、
       `copilot-instructions.md` 側から参照ルールを明記して利用する
 
-### 1-5. このリポジトリでの推奨配置
+### 2-5. このリポジトリでの推奨配置
 * **共通ルール（SSoT）:** `AGENTS.md`
 * **Claude Code入口:** `CLAUDE.md`（`AGENTS.md` を参照）
 * **Antigravity入口:** `GEMINI.md`（`AGENTS.md` を参照）
@@ -87,7 +116,7 @@ Cursor・Claude Code（Ckaudecode）・Antigravity（Google Gemini IDE）・GitH
    └─ skills/
 ```
 
-### 1-6. フォルダ構成の意図
+### 2-6. フォルダ構成の意図
 * **変更耐性の確保:** エディタ固有フォルダ名（例: `_agent`）ではなく `ai-context` を使うことで、利用ツールの入れ替え時にパス変更の影響を最小化する。
 * **責務の分離:** `rules`・`workflows`・`skills` を物理的に分離することで、レビュー時に「行動規範」「手順」「専門知識」を混同しない。
 * **入口の薄型化:** `.cursorrules` / `GEMINI.md` / `CLAUDE.md` / `.github/copilot-instructions.md` は参照案内だけに留め、実体は `ai-context` 側で一元管理する。
@@ -95,7 +124,7 @@ Cursor・Claude Code（Ckaudecode）・Antigravity（Google Gemini IDE）・GitH
 * **段階導入のしやすさ:** 新しいエディタを追加する際は「入口ファイル追加 + `AGENTS.md` 参照」で導入でき、既存資産を再利用できる。
 * **重複排除の原則:** `AGENTS.md` と `GEMINI.md` は root を正本（SSoT）とし、`ai-context/rules/` には重複コピーを置かない。
 
-### 1-7. エディタ別の初期読込順（最短導入）
+### 2-7. エディタ別の初期読込順（最短導入）
 各エディタで新規セッションを開始した際は、次の順序で参照させると最も安定します。
 
 1. **共通原則を固定する**
@@ -115,7 +144,7 @@ Cursor・Claude Code（Ckaudecode）・Antigravity（Google Gemini IDE）・GitH
 4. **作業開始時の運用を固定する**
    実装前は `workflows` で計画を確定し、実装中は `rules` を遵守し、必要時のみ `skills` を呼び出す運用に統一する。
 
-### 1-8. 正本ファイルと管理方針
+### 2-8. 正本ファイルと管理方針
 更新の手間を最小化するため、以下を正本として運用します。
 
 * `AGENTS.md`: 全エディタ共通の最上位ルール（正本）
@@ -125,11 +154,11 @@ Cursor・Claude Code（Ckaudecode）・Antigravity（Google Gemini IDE）・GitH
 
 ---
 
-## 2. Antigravityの基本設定（体系と保存先）
+## 3. Antigravityの基本設定（体系と保存先）
 
 設定には「GUIからの直感的な操作（Customizations）」と「ファイルベースでの直接設定」の2種類があり、AIの振る舞いは主に以下の3つのレイヤーで制御されます。
 
-### 2-1. 3つの主要な設定項目（AIの制御レイヤー）
+### 3-1. 3つの主要な設定項目（AI of Control Layers）
 * **Rules（ルール）**
   * **役割:** AIに常に守らせる「行動規範」や「掟」です（例：コーディング規約や日本語での出力など）。
   * **適用条件 (Activation Mode):** いつ適用するかを4種類から設定可能です。
@@ -144,7 +173,7 @@ Cursor・Claude Code（Ckaudecode）・Antigravity（Google Gemini IDE）・GitH
   * **役割:** AIの能力を拡張するための専門知識やスクリプト（ツール）です。
   * **使い方:** 人間が指示するのではなく、AIが「このタスクにはこの専門ツールが必要だ」と判断したときに自動で呼び出されます。
 
-### 2-2. ファイルの保存場所（直接編集する場合）
+### 3-2. ファイルの保存場所（直接編集する場合）
 GUIから作成した設定や、手動でファイルを作成する場合は、以下のパスに保存・反映されます。
 
 * **グローバル設定（PC全体で共通）**
@@ -159,7 +188,7 @@ GUIから作成した設定や、手動でファイルを作成する場合は�
 
 *(※ 設定を追加・変更した際は、Antigravityを再起動しないと読み込まれないケースがある点に注意してください。)*
 
-### 2-3. IDE本体の詳細設定（Settings）の推奨値
+### 3-3. IDE本体の詳細設定（Settings）の推奨値
 エージェントの自律性と安全性のバランスを取るため、ウィンドウ右下の **「Antigravity - Settings」** から以下の設定を行うことを推奨します：
 * **Security:** `Strict Mode` を **Off** にする。
 * **Artifact:** `Review Policy` を **Request Review** にし、必ず人間が確認を行うようにする。
@@ -168,11 +197,11 @@ GUIから作成した設定や、手動でファイルを作成する場合は�
 
 ---
 
-## 3. ベストプラクティス：SSoT（Single Source of Truth）パターン
+## 4. ベストプラクティス：SSoT（Single Source of Truth）パターン
 
 AntigravityとClaude CodeとCursorとGitHub Copilot（およびその他のCLI/IDE）の両方で汎用的に使える設定にするための鍵は、**ツール固有の設定ファイル（`GEMINI.md`や`CLAUDE.md`など）に直接ルールを書き込まず、CLI中立なディレクトリである `ai-context/` フォルダ（または共通の `AGENTS.md`）に設定を集約すること**です。
 
-### 3-1. `GEMINI.md` / `CLAUDE.md` 用のテンプレート
+### 4-1. `GEMINI.md` / `CLAUDE.md` 用のテンプレート
 これらのファイルは「薄いエントリポイント」とし、以下のどちらかの形式で共通ルールを読み込ませるだけにします。
 
 **パターンA（テキストで指示）**
@@ -190,11 +219,11 @@ include: "AGENTS.md"
 
 ---
 
-## 4. 実践的なプロンプト・設計パターン集
+## 5. 実践的なプロンプト・設計パターン集
 
 実務で汎用的に使える **Rules、Workflows、Skills** のプロンプト例です。コピー＆ペーストしてカスタマイズできます。
 
-### 4-1. Rules（常時適用・行動規範）のプロンプト例
+### 5-1. Rules（常時適用・行動規範）のプロンプト例
 AIの「振る舞い」や「コーディング規約」など、常に守らせる原則を定義します。`ai-context/rules/` 配下、または共通の `AGENTS.md` に配置します。
 
 ```markdown
@@ -219,7 +248,7 @@ AIの「振る舞い」や「コーディング規約」など、常に守らせ
 - **実装後の進捗同期は必須:** 開発タスクを実行した後は、実装計画書のタスク状況を必ず更新してください。日本語版と英語版がある場合は、両方を同じ進捗に同期してください。
 ```
 
-### 4-2. Workflows（手動タスク手順）のプロンプト例
+### 5-2. Workflows（手動タスク手順）のプロンプト例
 ユーザーがチャットでスラッシュコマンドを入力したときに手動で発動する手順書です。`ai-context/workflows/` 配下に配置します。
 以下の例は、ハルシネーション（幻覚）や手戻りを防ぐための「いきなりコードを書かせず、まず計画を作らせる」ワークフローです。
 
@@ -241,7 +270,7 @@ AIの「振る舞い」や「コーディング規約」など、常に守らせ
 4. **承認の待機:** 「この計画で実装を進めてよろしいでしょうか？」とユーザーに確認し、承認を得てから実際のコーディングフェーズに移行してください。
 ```
 
-### 4-3. Skills（自動発動の専門知識）のプロンプト例
+### 5-3. Skills（自動発動の専門知識）のプロンプト例
 AIが文脈から判断してオンデマンドで読み込む拡張能力です。`ai-context/skills/` 内の `SKILL.md` に配置します。
 **YAMLフロントマターで「発動条件（description）」を詳細に書く**ことが重要です。
 
@@ -252,7 +281,7 @@ description: ユーザーが「コミットして」「変更を保存して」�
 ---
 
 # Goal
-Gitのコミットメッセージを、Conventional Commitsの仕様に沿って生成・提案すること。
+Gitのコミットメッセージを、Conventional Commits of specifications に沿って生成・提案すること。
 
 # Instructions
 1. `git status` および `git diff` を実行し、直近の変更内容を正確に把握してください。
@@ -273,7 +302,7 @@ Gitのコミットメッセージを、Conventional Commitsの仕様に沿って
 
 ---
 
-## 5. 運用・汎用化のためのベストプラクティス
+## 6. 運用・汎用化のためのベストプラクティス
 
 1. **記憶の分業化（3ファイル体制）**
    ルールとコンテキストを以下の3ファイルに分割して管理することで、コンテキストの肥大化とセッション間の記憶喪失を防ぎます。
@@ -284,3 +313,43 @@ Gitのコミットメッセージを、Conventional Commitsの仕様に沿って
    AIに対しては「〜をしてください」よりも、Constraints（禁止事項）として「〜はしないでください」と設定する方が強力に機能し、安全性が高まります。
 3. **1ファイルにつき100〜200行に収める**
    ルールファイルが長すぎるとAIの注意が分散し、精度が落ちます（100〜200行程度が最適）。長大になる場合は、外部ファイルとして分割し、インデックスのように参照させてください。
+
+---
+
+## 7. AI駆動アプリ開発・収益化アーキテクチャ
+
+当リポジトリでは、AIエディタ（Cursor, Claude Code, Antigravity, GitHub Copilot）を活用した「個人アプリ開発・高速ローンチ・確実な収益化・B2B横展開」のためのルールとプレイブックを完備しています。
+
+### 7-1. レイヤー別の配置と役割
+
+| レイヤー | 配置ファイル | 役割・活用タイミング |
+| :--- | :--- | :--- |
+| **入口ルール (SSoT)** | `AGENTS.md` | すべてのエディタが常時読み込む。逆算思考、事前需要検証、MVP1週間原則、バズ前5大施策、初期星1防衛を必須化。 |
+| **行動規範 (Rules)** | `ai-context/rules/app_monetization_policy.md` | アプリ開発・課金・ストア審査・ローンチ防衛における恒久的な制約と行動規範。 |
+|  | `ai-context/rules/ios_codex_development_policy.md` | Codex + `plugins/build-ios-apps` 前提のiOS開発恒久規範（CLI優先、MVファースト、App Intents）。 |
+| **プラットフォーム基準** | `ai-context/rules/app_platform_policy_baseline.md` | App Store / Google Play の審査基準（EULA・プライバシーポリシー・動的価格等）。 |
+| **専門知識 (Skills)** | `ai-context/skills/app-monetization-playbook.md` | 9段階フロー、Expo+SQLite+RevenueCat+PostHog設計、デコイ・アンカリング価格、B2B展開のチートシート。 |
+|  | `ai-context/skills/codex-ios-development-guide.md` | Codex + `plugins/build-ios-apps` 実践プロンプト集（ビルド、リファクタリング、Liquid Glass、App Intents、デバッグ）。 |
+| **専門ロール (Roles)** | `ai-context/skills/roles/` | `product-planner`（逆算・ニッチ選定）、`tech-architect`（Expo/RevenueCat/WBS）、`marketing-operator`（Build in Public/星1防衛）、`finance-risk-controller`（逆算収支・デコイ）、`ui-designer`（AIっぽさ排除・ソフトPaywall）に専門性を分散注入。 |
+| **実行手順 (Workflows)** | `ai-context/workflows/plan_apps.md` | 企画書生成時に逆算収支、事前需要検証、バズ前5大施策要件、App Intentsを自動ヒアリング・定義。 |
+|  | `ai-context/workflows/plan_develop.md` | 開発計画策定時に1週間MVPスプリント、推奨スタック、Codex開発前提、バズ前5大施策WBSを自動構築。 |
+|  | `ai-context/workflows/generatepost.md` | SNS拡散（冒頭の痛み訴求、17:40投稿、スクショ）、Build in Public、事前需要モック投稿の生成。 |
+|  | `ai-context/workflows/post_release_operations.md` | リリース後のPostHog行動分析、アプリ内FB収集、初期星1防衛判定、PMF・ユニットエコノミクス最適化。 |
+
+### 7-2. 開発・収益化のキーコンセプト
+- **逆算思考 (Reverse Thinking):** 目標月商（例: 20万円）から必要有料会員数（167人）・CVR（1%）・必要MAU（16,700人）・許容CPAを逆算。
+- **事前需要検証 (Pre-demand Validation):** ChatGPT/Claudeで生成したモック画像をSNS投稿し、反響を確認してから実装に着手（無駄な開発を抑止）。
+- **MVP 1週間原則:** 4〜5日〜1週間でコアバリュー1点に特化して高速リリース。
+- **バズる前の5大必須施策:** ①レビュー促進ダイアログ、②アプリ内FB導線、③PostHogユーザー行動分析、④動的プラン・価格戦略（RevenueCat）、⑤AIっぽさを排除したUI/UX（Design MD）。
+- **初期星1レビュー防衛戦略:** リリース直後は本アカウントで公表せず、別動線で星5レビューを10〜20件蓄積した後に本公表。
+- **B2B受託・AIコンサル展開:** アプリ資産とAI開発ノウハウをアナログ企業向け独自iOSアプリへ横展開し、月数十万円の高単価収益化を実現。
+
+### 7-3. CodexによるiOSネイティブ開発規律（plugins/build-ios-apps）
+iOSネイティブアプリ開発は、OpenAI Codex および `plugins/build-ios-apps` プラグインの使用を標準前提としています。
+- **CLI優先ビルドループ:** Xcode GUIを開かず、Appleの `xcodebuild` または `Tuist` を用いてターミナルからビルド・テスト・検証を完結。
+- **XcodeBuildMCP連携:** シミュレータの検出・起動、アクセシビリティIDによるUI操作、スクリーンショット、ログ、LLDBスタック収集を自律実行し、バグ修正や画面変更の証拠（Evidence）を提示。
+- **MVファースト原則（MVVM排斥）:** 肥大化したViewModelを排し、`@State`, `@Environment`, `@Query`, `.task`, `onChange` を用いたSwiftUIネイティブのMV設計を徹底。
+- **サブビュー抽出とファイル順序:** 巨大な `body` を禁止し、明示的入力・`@Binding`・コールバックを持つ専用 `View` 型へ分割。
+- **App Intents標準実装:** ショートカット、Siri、Spotlight、将来のアシスタント駆動UIで外部から呼び出せるアクションとエンティティを設計。
+
+
