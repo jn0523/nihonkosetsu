@@ -24,3 +24,43 @@
 - **実装計画書の進捗更新は必須:** `development_plan.md` 等の実装計画書が存在する場合、開発作業を進めるたびにチェック項目・進捗率・未完タスクを都度更新してください。
 - **更新の同時性:** 実装コードのみ先行させず、関連する計画書更新を同一作業単位で実施してください。
 - **多言語同期:** 日本語版・英語版の計画書がある場合は、同じ粒度と同じ進捗状態に同期してください。
+
+# Git運用ルール (Git Operation Policy)
+- **恒久ルールの正本:** Gitの運用方針は `ai-context/rules/git_operation_policy.md` を正本とし、実装計画書へ重複定義しないでください。
+- **main直コミット禁止:** `main` への直接コミットは禁止です。必ず作業ブランチ経由で反映してください。
+- **release反映前検査:** `release/*` から `main` へ反映する前に、`ai-context/workflows/release_gate.md` を実行して検査・監査を完了してください。
+
+# 外部Skill導入ルール (External Skill Intake Policy)
+- **導入方針:** 外部Skill/Pluginは丸ごと移植せず、必要な観点のみ選抜して `ai-context/` に再記述する。
+- **1/2/4の適用方針:**
+	- `tw93/claude-health` は監査観点を概念採用し、自リポジトリのWorkflowへ統合する。
+	- `yctimlin/mcp_excalidraw` は図解用途に限定して採用し、`ai-context/workflows/diagram_ops_with_mcp_excalidraw.md` を正本として運用する。
+	- `trailofbits/skills` は選抜採用とし、設計思想のみ参照して文書は自前で再記述する。
+- **ライセンス規律:** CC BY-SA 等の継承条件を伴う資産は直接コピーを避け、引用が必要な場合のみ範囲最小化・出典明示を行う。
+- **セキュリティ規律:** 認証なしAPI前提の運用は外部公開を禁止し、`localhost` 閉域を原則とする。
+- **運用規律:** 外部Skill導入時は30日以内の試行計画を立て、利用回数・効果・運用負荷を記録し、継続/縮小/停止を判定する。
+
+# アプリ開発・収益化原則 (App Development & Monetization Principles)
+- **恒久ルールの正本:** アプリ企画・開発・収益化・審査・初期運用の恒久方針は `ai-context/rules/app_monetization_policy.md` および `ai-context/skills/app-monetization-playbook.md` を正本とする。
+- **逆算思考の徹底:** 「作りたいものを作る」純算思考を排し、目標収益から必要なダウンロード数・CVR・CPAを逆算して設計する。
+- **事前需要検証の義務:** ChatGPT/Claude等で作成したモック画像をSNS等で先行テストし、市場の反響（需要）を確認してから開発に着手する。反応が薄い場合は速やかにピボットを検討する。
+- **MVP1週間原則:** 機能を最小限に絞り込み、4〜5日〜1週間程度で迅速に初期リリース（MVP）する。過度な作り込みを避け、市場の反響確認を最優先とする。
+- **バズ前5大施策の実装義務:** ①レビュー促進機能、②アプリ内FB導線、③ユーザー行動分析（PostHog等）、④動的なプラン・価格制御、⑤AIっぽさを排除したUI/UXの磨き込みをリリース前必須要件とする。
+- **初期星1レビュー防衛:** リリース直後に開発者本アカウントで公表せず、ターゲット向け別動線や広告等で初期告知を行い、高評価（星5）を蓄積した後に本アカウントで公表する。
+
+# Codex・iOSネイティブ開発規律 (Codex & iOS Native Development with build-ios-apps)
+- **恒久ルールの正本:** iOSネイティブアプリ開発の恒久方針は `ai-context/rules/ios_codex_development_policy.md` および `ai-context/skills/codex-ios-development-guide.md` を正本とする。
+- **開発基盤・プラグイン前提:** iOSアプリ開発は OpenAI Codex および `plugins/build-ios-apps` プラグインの使用を標準前提とする。CLI優先（`xcodebuild` / `Tuist`）でビルドループを回し、Xcode GUIを開かずにエージェントループ内で完結させる。
+- **シミュレータ自律デバッグ (XcodeBuildMCP):** 高度な検証・デバッグ時は `XcodeBuildMCP` を使用し、シミュレータの検出・起動・UI操作（アクセシビリティID推奨）・スクリーンショット・ログ・スタックトレースによる証拠（Evidence）の提示を義務付ける。
+- **MVファースト原則 (MVVM排斥):** SwiftUIではMVVMではなくMV（Model-View）をデフォルトとする。`@State`、`@Environment`、`@Query`、`.task`、`onChange` を優先し、真に必要な場合を除き不要なViewModelの作成を禁止する。
+- **ビュー構成順序とサブビュー抽出:** 保存プロパティ、計算状態、`init`、`body`、ヘルパーの順序を厳守し、巨大な `body` は小さな明示的入力・`@Binding`・コールバックを持つ専用 `View` 型へ分割抽出する。
+- **App Intents標準実装:** 単なるアプリ内UIにとどまらず、ショートカット、Siri、Spotlight、ウィジェット、将来のアシスタント駆動UIで活用できるアクションとエンティティを `App Intents` として設計・公開する。
+
+# アプリ検証・QAチェックリスト作成規範 (App Validation & QA Checklist Policy)
+- **恒久ルールの正本:** アプリ検証手順書（チェックリスト）作成の恒久方針は `ai-context/rules/app_validation_policy.md`、観点カタログは `ai-context/skills/app-validation-catalog.md`、作成手順は `ai-context/workflows/create_qa_checklist.md` を正本とする。
+- **検証手順書作成の義務:** リリース前（TestFlight配布・ストア審査提出）に、プラットフォーム別（iPhone/iPad/Android）・画面別に構造化された「最終テストチェックリスト（検証手順書）」の作成を必須とする。
+- **ダークモード・表示整合性の検証義務:** OS/アプリ内のテーマ切替即時反映、十分なコントラスト比（黒背景に黒文字等の完全排除）、ダイアログ白飛び/黒潰れ防止、横画面・フォントサイズ最大化時のレイアウト崩れ防止を検証項目へ必ず盛り込む。
+- **課金ライフサイクル・失効後挙動の検証義務:** サンドボックス購入・リストアに加え、「有料プラン失効後（解約・有効期限切れ・ダウングレード）の有料オプション遮断」「Free上限超過データの保全（閲覧・削除可）と新規作成ブロック」「ソフトペイウォール再表示」の検証項目を必須とする。
+- **AI機能・耐障害性の検証義務:** 入力境界値（空文字・長文・不正URL）、Free/Proプラン別の利用回数制限カウント、429/クォータ超過/サーバーダウン時の親切なエラー表示、タイムアウト・キャンセル操作、壊れたJSONに対するフォールバックの検証項目を必須とする。
+
+
