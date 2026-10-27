@@ -285,31 +285,11 @@
             transform-origin: bottom left;
         }
 
-        /* 法的文書ナビゲーション — フッター下部に配置して視認性を保ちつつ控えめに表示 */
-        .legal-nav {
+        /* フッターのコピーライト表示 — 2026年時点の権利関係を明記 */
+        .copyright {
             margin-top: 1.5rem;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-
-        .legal-nav a {
-            font-size: 0.82rem;
+            font-size: 0.85rem;
             color: var(--text-muted);
-            text-decoration: none;
-            transition: color 0.25s ease;
-            font-weight: 400;
-        }
-
-        .legal-nav a:hover {
-            color: #a78bfa;
-        }
-
-        .legal-nav .separator {
-            color: rgba(255, 255, 255, 0.2);
-            font-size: 0.75rem;
         }
 
         /* Responsive Design */
@@ -372,6 +352,17 @@
                 <div class="row-content">東京都中野区中央五丁目１２番１－１０３号</div>
             </div>
 
+            <!-- 法人番号および会社法人等番号 — 法人としての信頼性向上および公的登記情報の明記 -->
+            <div class="profile-row">
+                <div class="row-header">法人番号</div>
+                <div class="row-content">2011301005321</div>
+            </div>
+
+            <div class="profile-row">
+                <div class="row-header">会社法人等番号</div>
+                <div class="row-content">0113-01-005321</div>
+            </div>
+
             <div class="profile-row">
                 <div class="row-header">構成人数</div>
                 <div class="row-content">1名</div>
@@ -389,9 +380,9 @@
 
             <div class="profile-row">
                 <div class="row-header">提供中サービス</div>
+                <!-- 外部リンクは解除し、サービス名のみをテキストとして明記 -->
                 <div class="row-content">
-                    賃貸物件管理：<a href="https://maisonterrasseasagaya.pages.dev/introduction" target="_blank"
-                        rel="noopener noreferrer" class="service-link">Maison Terrasse Asagaya</a>
+                    賃貸物件管理：Maison Terrasse Asagaya
                 </div>
             </div>
         </main>
@@ -400,12 +391,8 @@
             <p>お問い合わせは<a
                     href="https://docs.google.com/forms/d/e/1FAIpQLSdkLEoxjHXS-Uq9_uAbIKo9T3bEFGlFypbnEbYlW5OAoZeV8g/viewform?usp=publish-editor"
                     target="_blank" rel="noopener noreferrer">こちら</a></p>
-            <!-- 法的文書へのナビゲーション — アプリリリースに伴い追加 -->
-            <nav class="legal-nav" aria-label="法的文書ナビゲーション">
-                <a href="privacy-policy.html" id="link-privacy-policy">プライバシーポリシー</a>
-                <span class="separator" aria-hidden="true">｜</span>
-                <a href="terms-of-service.html" id="link-terms-of-service">利用規約</a>
-            </nav>
+            <!-- 規約・ポリシーは準備中ステータスのため会社概要からのリンクは非掲載とし、フッターに権利表記のみを設置 -->
+            <p class="copyright">© 2026 日本工設株式会社. All rights reserved.</p>
         </footer>
     </div>
 </body>
