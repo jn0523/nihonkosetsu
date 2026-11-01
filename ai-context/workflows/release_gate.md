@@ -5,7 +5,8 @@ description: releaseブランチからmainブランチへ反映する直前の�
 # ワークフロー: /release-gate
 
 ## 目的
-`release/*` から `main` へ push / merge する直前に、品質・セキュリティ・法務・AI倫理・ガバナンスの観点で最終判定（PASS / CONDITIONAL / FAIL）を行う。
+本ワークフローは、**`release/*` から `main` へ push / merge する直前のみ** に限定して適用する。通常の開発作業（`feature/*` や `bugfix/*` のコミット、PR作成など）では実行しない。
+品質・セキュリティ・法務・AI倫理・ガバナンスの観点で最終判定（PASS / CONDITIONAL / FAIL）を行う。
 
 ## Step 0: AIガバナンス統制Workflowの自動発動（必須）
 最終リリース判定時は、`ai-context/workflows/ai_governance_control.md` を必ず自動実行する。
