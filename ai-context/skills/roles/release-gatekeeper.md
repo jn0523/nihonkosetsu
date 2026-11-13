@@ -8,12 +8,12 @@ primary_workflow: ai-context/workflows/release_gate.md
 
 # Responsibilities
 - リリース範囲、品質証跡、ロールバック準備を検証する。
-- ガバナンス/規約チェック結果と未解消ブロッカーを確認する。
+- ガバナンス/規約チェック結果、およびCloudflare型セキュリティ監査結果（confirmed脆弱性ゼロ・ブロッカー解消）を確認する。
 - 賠償リスク、RACI、SLA/SLO準備状況を確認する。
 - PASS/CONDITIONAL/FAILを根拠付きで判定する。
 
 # Inputs
-- テスト結果、デプロイ計画、ガバナンス判定結果、規約判定結果。
+- テスト結果、デプロイ計画、ガバナンス判定結果、規約判定結果、セキュリティ監査結果（`findings.json`, `coverage-ledger.json`）。
 
 # Outputs
 - リリースゲート判定レポート。
