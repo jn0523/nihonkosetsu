@@ -18,6 +18,7 @@
 - post-release-operator: リリース後監視、障害対応、再発防止。
 - marketing-operator: 集客施策、訴求設計、チャネル運用。
 - finance-risk-controller: 収支防衛、下方リスク、閾値管理。
+- security-auditor: Cloudflare型監査思想に基づく境界破綻確定・独立検証セキュリティ監査。
 
 ## 共通スキル（外部知見の内製化）
 - config-health-auditor: 設定劣化を健診し、Critical/Structural/Incrementalで改善提案を出す。
@@ -27,7 +28,7 @@
 ## 推奨実行順
 1. product-planner
 2. tech-architect と ui-designer
-3. governance-reviewer と platform-compliance-checker
+3. governance-reviewer、platform-compliance-checker、security-auditor
 4. marketing-operator と finance-risk-controller
 5. release-gatekeeper
 6. post-release-operator

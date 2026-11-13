@@ -31,16 +31,17 @@
 - **ブランチ運用（フェーズ別）:**
   - **初期リリース前:** スピードと試作を優先し、`main` ブランチを直接使って開発しても構いません。
   - **初期リリース後:** 本番環境保護のため `main` への直接コミットは禁止です。必ず `feature/*` や `bugfix/*` で作業し、リリース時は必ず `release/*` ブランチを挟んでください。
-- **release反映前検査 (release_gateの限定適用):** `ai-context/workflows/release_gate.md` は、**`release/*` から `main` への反映時のみ**適用します。日常の `feature/*` や `bugfix/*` での開発・コミット・PRには適用・強制しないでください。
+- **release反映前検査 (release_gateの限定適用):** `ai-context/workflows/release_gate.md` は、**`release/*` から `main` への反映時のみ**適用します（Cloudflare型セキュリティ監査の自動実行を含む）。日常の `feature/*` や `bugfix/*` での開発・コミット・PRには適用・強制しないでください。
 
 # 外部Skill導入ルール (External Skill Intake Policy)
 - **導入方針:** 外部Skill/Pluginは丸ごと移植せず、必要な観点のみ選抜して `ai-context/` に再記述する。
-- **1/2/4の適用方針:**
+- **1/2/4/5の適用方針:**
 	- `tw93/claude-health` は監査観点を概念採用し、自リポジトリのWorkflowへ統合する。
 	- `yctimlin/mcp_excalidraw` は図解用途に限定して採用し、`ai-context/workflows/diagram_ops_with_mcp_excalidraw.md` を正本として運用する。
 	- `trailofbits/skills` は選抜採用とし、設計思想のみ参照して文書は自前で再記述する。
-- **ライセンス規律:** CC BY-SA 等の継承条件を伴う資産は直接コピーを避け、引用が必要な場合のみ範囲最小化・出典明示を行う。
-- **セキュリティ規律:** 認証なしAPI前提の運用は外部公開を禁止し、`localhost` 閉域を原則とする。
+	- `cloudflare/security-audit-skill` は脆弱性発見・独立検証ハーネスの設計思想（境界破綻確定、敵対的反証、網羅性台帳、安全隔離実行）を選抜採用し、`ai-context/rules/security_audit_policy.md` および `ai-context/workflows/security_audit.md` を正本として運用する。Skills CLI（`npx skills add ...`）でインストールし、リリース前監査（`/release-gate`）時にプロファイル指定で稼働させる。
+- **ライセンス規律:** CC BY-SA 等の継承条件を伴う資産は直接コピーを避け、引用が必要な場合のみ範囲最小化・出典明示を行う。MITライセンス資産（Cloudflare skill等）も自前再記述と出典明記を徹底する。
+- **セキュリティ規律:** 認証なしAPI前提の運用は外部公開を禁止し、`localhost` 閉域を原則とする。動的検証・テスト実行は外部通信遮断・環境変数分離・scratch限定書き込みのOSサンドボックスを徹底し、満たせない場合は実行せず `needs_validation` として扱う。
 - **運用規律:** 外部Skill導入時は30日以内の試行計画を立て、利用回数・効果・運用負荷を記録し、継続/縮小/停止を判定する。
 
 # アプリ開発・収益化原則 (App Development & Monetization Principles)

@@ -1,5 +1,5 @@
 ---
-description: releaseブランチからmainブランチへ反映する直前のリリース前検査を実施する。実行時にAIガバナンス統制とアプリプラットフォーム規約チェックを自動発動し、最新ガイドライン差分と法務・倫理・安全性・ストア審査適合を確認する。
+description: releaseブランチからmainブランチへ反映する直前のリリース前検査を実施する。実行時にAIガバナンス統制、アプリプラットフォーム規約チェック、Cloudflare型セキュリティ監査を自動発動し、最新ガイドライン差分、法務・倫理・安全性、ストア審査適合、および脆弱性の確定検査を確認する。
 ---
 
 # ワークフロー: /release-gate
@@ -22,6 +22,30 @@ description: releaseブランチからmainブランチへ反映する直前の�
 - Apple App Store / Google Play の審査基準・配布契約・課金/メタデータ要件を確認する。
 - `ai-context/rules/app_platform_policy_baseline.md` と比較し、差分があれば反映する。
 - `FAIL` 判定が含まれる場合はリリース不可。
+
+## Step 0.6: Cloudflare型セキュリティ監査Workflowの自動発動（必須）
+最終リリース判定時は、`ai-context/workflows/security_audit.md` を必ず自動実行する。
+
+1. **Skillのインストール確認・実行:**
+   - 未導入の場合は、公式Skills CLIを用いてスキルをインストールする。
+     ```bash
+     npx skills add https://github.com/cloudflare/security-audit-skill --skill security-audit --global
+     ```
+   - Node.js 環境（バリデータスクリプト実行用）が存在することを確認する。
+2. **監査スキルの稼働 (Full Audit Mode):**
+   - リリース差分スコープ（`scoped`）または全体（`standard`）を指定し、Readme準拠の稼働構文で実行する。
+     ```text
+     # 差分スコープ監査（推奨）
+     do a security review with profile: scoped, output to ~/security-audit-skill/<repo-name>/run-1
+
+     # 全体監査
+     security audit this codebase, output to ~/security-audit-skill/<repo-name>/run-1
+     ```
+3. **判定条件:**
+   - `confirmed` な脆弱性（Critical / High / Medium）が **0件** であること。
+   - `confirmed` の Low 指摘のみ存在する場合は、リリース後直ちに対応する是正計画（期日・担当者付き）を提示できれば CONDITIONAL 許容。
+   - `needs_validation` の未解決項目に、リリースを阻害する重大な未検証リスクが存在しないこと。
+   - `FAIL` 判定（未解決のConfirmed重大脆弱性、または致命的なneeds_validation残存）が含まれる場合はリリース不可。
 
 ## Step 0.7: 外部Skill導入統制の確認（必須）
 最終リリース判定時は、外部Skill/Plugin由来の運用が含まれる場合に、以下を必ず確認する。
@@ -60,9 +84,9 @@ description: releaseブランチからmainブランチへ反映する直前の�
 - SLA/SLO準備状況の確認（一次応答時間、復旧目標、告知期限、返金/補償判断基準）
 
 ## Step 5: 最終判定
-- PASS: 主要リスクが許容範囲で、未対応の重大課題なし
-- CONDITIONAL: 残課題が軽微で期限・責任者付きで是正可能
-- FAIL: 重大リスク未解消、またはAIガバナンス統制/プラットフォーム規約チェックでFAIL、または損害賠償を含む下方リスクが収支防衛ラインを超過
+- PASS: 主要リスクが許容範囲で、未対応の重大課題なし（セキュリティ監査でConfirmed重大脆弱性0件）
+- CONDITIONAL: 残課題が軽微で期限・責任者付きで是正可能（セキュリティ監査でConfirmed Lowのみ、かつ是正計画あり）
+- FAIL: 重大リスク未解消、またはAIガバナンス統制/プラットフォーム規約チェック/セキュリティ監査でFAIL、または損害賠償を含む下方リスクが収支防衛ラインを超過
 
 ## Step 6: リリース後運用Workflowへの引き継ぎ
 - 反映後は `ai-context/workflows/post_release_operations.md` を実行し、監視・障害対応・ロールバック判断を運用する。
@@ -93,6 +117,18 @@ description: releaseブランチからmainブランチへ反映する直前の�
 - Structural 指摘:
 - Incremental 指摘:
 - 証跡:
+
+## セキュリティ監査結果（Cloudflare Security Audit）
+- 判定: PASS / CONDITIONAL / FAIL
+- 適用プロファイル: quick / standard / deep / scoped
+- カバレッジ達成状況:
+- Confirmed 脆弱性（件数/詳細）:
+  - Critical: 0件
+  - High: 0件
+  - Medium: 0件
+  - Low: 0件
+- Needs Validation（未解決リスク）:
+- 証跡（findings.json / coverage-ledger.json）:
 
 ## 外部Skill統制チェック
 - AGENTS 外部Skill導入ルール: PASS / CONDITIONAL / FAIL / N/A
@@ -134,6 +170,7 @@ description: releaseブランチからmainブランチへ反映する直前の�
 - Required Actions Before Release
 - Governance Diff Reflection（ガイドライン差分反映結果）
 - Platform Policy Diff Reflection（ストアポリシー差分反映結果）
+- Security Audit Findings（Confirmed件数、Needs Validation状況、合否判定）
 - External Skill Control Check（ライセンス、公開範囲、運用記録の適合状況）
 - Liability Exposure Assessment（想定最大損失、発生確率、防衛ライン比較、残余リスク）
 - Financial Guardrail Decision（防衛ライン内 / 要縮退 / 要延期）
